@@ -17,23 +17,24 @@ export default class Dep {
 
   constructor () {
     this.id = uid++
+    // 初始化依赖数组
     this.subs = []
   }
-
+  // 添加依赖
   addSub (sub: Watcher) {
     this.subs.push(sub)
   }
-
+  // 删除依赖
   removeSub (sub: Watcher) {
     remove(this.subs, sub)
   }
-
+  // 添加依赖
   depend () {
     if (Dep.target) {
       Dep.target.addDep(this)
     }
   }
-
+  // 当数据发生变化的时候 通知依赖管理器中的依赖
   notify () {
     // stabilize the subscriber list first
     const subs = this.subs.slice()
