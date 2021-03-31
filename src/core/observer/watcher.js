@@ -70,7 +70,7 @@ export default class Watcher {
     this.dirty = this.lazy // for lazy watchers
     this.deps = []
     this.newDeps = []
-    this.depIds = new Set()
+    this.depIds = new Set() // 不会重复的订阅
     this.newDepIds = new Set()
     this.expression = process.env.NODE_ENV !== 'production'
       ? expOrFn.toString()
@@ -124,6 +124,7 @@ export default class Watcher {
 
   /**
    * Add a dependency to this directive.
+   * 记录自己都订阅过哪些Dep
    */
   addDep (dep: Dep) {
     const id = dep.id
@@ -131,7 +132,7 @@ export default class Watcher {
       this.newDepIds.add(id)
       this.newDeps.push(dep)
       if (!this.depIds.has(id)) {
-        dep.addSub(this)
+        dep.addSub(this) // 将自己订阅到Dep中
       }
     }
   }

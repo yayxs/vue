@@ -33,9 +33,9 @@ export function toggleObserving (value: boolean) {
  * object. Once attached, the observer converts the target
  * object's property keys into getter/setters that
  * collect dependencies and dispatch updates.
- * 把对象的所有属性转换为可观测的对象
+ *
  */
-export class Observer {
+export class Observer { // 将数据转为响应式的对象
   value: any;
   dep: Dep;
   vmCount: number; // number of vms that have this object as root $data
@@ -47,8 +47,8 @@ export class Observer {
     // 标价value 是已经转换为响应式了
     def(value, '__ob__', this)
     if (Array.isArray(value)) { // 数组处理
-      if (hasProto) {
-        protoAugment(value, arrayMethods)
+      if (hasProto) { // hasProto 是否支持
+        protoAugment(value, arrayMethods) // 覆盖原型功能
       } else {
         copyAugment(value, arrayMethods, arrayKeys)
       }
@@ -73,6 +73,10 @@ export class Observer {
   /**
    * Observe a list of Array items.
    */
+  /**
+   * 侦测数组的每一项
+   * @param {*} items
+   */
   observeArray (items: Array<any>) {
     for (let i = 0, l = items.length; i < l; i++) {
       observe(items[i])
@@ -86,9 +90,14 @@ export class Observer {
  * Augment a target Object or Array by intercepting
  * the prototype chain using __proto__
  */
+/**
+ *
+ * @param {*} target
+ * @param {*} src 拦截器 覆盖原型功能
+ */
 function protoAugment (target, src: Object) {
   /* eslint-disable no-proto */
-  target.__proto__ = src
+  target.__proto__ = src // todo:新增 覆盖掉那些即将被转换为响应式Array数据原型
   /* eslint-enable no-proto */
 }
 
@@ -97,6 +106,12 @@ function protoAugment (target, src: Object) {
  * hidden properties.
  */
 /* istanbul ignore next */
+/**
+ * arrayMethods身上的这些方法设置到被侦测的数组上
+ * @param {*} target
+ * @param {*} src
+ * @param {*} keys
+ */
 function copyAugment (target: Object, src: Object, keys: Array<string>) {
   for (let i = 0, l = keys.length; i < l; i++) {
     const key = keys[i]
@@ -108,6 +123,12 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * Attempt to create an observer instance for a value,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
+ */
+/**
+ *
+ * @param {*} value
+ * @param {*} asRootData
+ * @returns
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
@@ -164,6 +185,7 @@ export function defineReactive (
       if (Dep.target) {
         // 在对象的 getter 中收集依赖
         dep.depend()
+        // 数组的收集依赖
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
@@ -208,11 +230,13 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
   ) {
     warn(`Cannot set reactive property on undefined, null, or primitive value: ${(target: any)}`)
   }
+  // 是数组 && 有效的索引值
   if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.length = Math.max(target.length, key)
     target.splice(key, 1, val)
     return val
   }
+  // key 已经存在target中
   if (key in target && !(key in Object.prototype)) {
     target[key] = val
     return val

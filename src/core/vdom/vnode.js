@@ -1,7 +1,7 @@
 /* @flow */
 
 export default class VNode {
-  tag: string | void;
+  tag: string | void; // 元素节点的名称
   data: VNodeData | void;
   children: ?Array<VNode>;
   text: string | void;

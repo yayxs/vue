@@ -53,11 +53,11 @@ export function eventsMixin (Vue: Class<Component>) {
   const hookRE = /^hook:/
   Vue.prototype.$on = function (event: string | Array<string>, fn: Function): Component {
     const vm: Component = this
-    if (Array.isArray(event)) {
+    if (Array.isArray(event)) { // 是数组的时候就要遍历数组
       for (let i = 0, l = event.length; i < l; i++) {
-        vm.$on(event[i], fn)
+        vm.$on(event[i], fn) // 递归调用
       }
-    } else {
+    } else { // 时间列表中添加回调 _events 初始化准备的属性
       (vm._events[event] || (vm._events[event] = [])).push(fn)
       // optimize hook:event cost by using a boolean flag marked at registration
       // instead of a hash lookup

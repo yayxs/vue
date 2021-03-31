@@ -43,16 +43,6 @@
     "release:note": "node scripts/gen-release-note.js",
     "commit": "git-cz"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged",
-    "commit-msg": "node scripts/verify-commit-msg.js"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vuejs/vue.git"
@@ -141,10 +131,5 @@
     "weex-js-runtime": "^0.23.6",
     "weex-styler": "^0.3.0",
     "yorkie": "^2.0.0"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }

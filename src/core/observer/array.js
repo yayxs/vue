@@ -6,6 +6,10 @@
 import { def } from '../util/index'
 
 const arrayProto = Array.prototype
+
+/**
+ * 继承自Array.prototype 具备所有功能
+ */
 export const arrayMethods = Object.create(arrayProto)
 
 const methodsToPatch = [
@@ -23,11 +27,13 @@ const methodsToPatch = [
  */
 methodsToPatch.forEach(function (method) {
   // cache original method
-  const original = arrayProto[method]
+  const original = arrayProto[method] // 缓存原始的方法
+  // 实际执行的是mutator函数
   def(arrayMethods, method, function mutator (...args) {
-    const result = original.apply(this, args)
+    const result = original.apply(this, args) // 执行原始的方法
     const ob = this.__ob__
-    let inserted
+    let inserted  // 取出来新增的元素
+    // 新增数组的方法
     switch (method) {
       case 'push':
       case 'unshift':

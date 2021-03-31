@@ -353,16 +353,19 @@ export function stateMixin (Vue: Class<Component>) {
     }
     options = options || {}
     options.user = true
+    // 通过new Watcher 实现 vm.$watch 的基本功能
     const watcher = new Watcher(vm, expOrFn, cb, options)
-    if (options.immediate) {
+     // 有没有使用immediate属性
+    if (options.immediate) { // 使用的话就立即执行cb函数
       try {
         cb.call(vm, watcher.value)
       } catch (error) {
         handleError(error, vm, `callback for immediate watcher "${watcher.expression}"`)
       }
     }
+    // 返回一个取消观察数据的函数
     return function unwatchFn () {
-      watcher.teardown()
+      watcher.teardown() // 本质：把watcher实例从当前的正在观察的状态依赖列表移除
     }
   }
 }
