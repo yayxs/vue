@@ -4,6 +4,11 @@ import { ASSET_TYPES } from 'shared/constants'
 import { defineComputed, proxy } from '../instance/state'
 import { extend, mergeOptions, validateComponentName } from '../util/index'
 
+/**
+ * Vue.cid 静态属性
+ * Vue.extend 静态的方法
+ * @param {*} Vue
+ */
 export function initExtend (Vue: GlobalAPI) {
   /**
    * Each instance constructor, including Vue, has a unique

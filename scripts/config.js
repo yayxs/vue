@@ -1,3 +1,7 @@
+/**
+ * 生成rollup配置的文件
+ * entry-runtime-with-compiler.js
+ */
 const path = require('path')
 const buble = require('rollup-plugin-buble')
 const alias = require('rollup-plugin-alias')

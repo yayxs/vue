@@ -384,13 +384,14 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
 /**
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
+ * 合并两个对象为一个新的对象 这个函数在实例化和继承的时候都有用到 函数会产生一个新的对象
  */
 export function mergeOptions (
   parent: Object,
   child: Object,
   vm?: Component
 ): Object {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production') { // 非生产环境下 检查组件名称
     checkComponents(child)
   }
 

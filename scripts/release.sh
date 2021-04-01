@@ -1,4 +1,6 @@
+# 自动发布新版本的脚本
 #!/bin/bash
+
 set -e
 
 if [[ -z $1 ]]; then

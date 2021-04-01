@@ -18,14 +18,28 @@ import {
   defineReactive
 } from '../util/index'
 
+/**
+ * Vue.options = {
+ *
+ * components:{
+ * KeepAlive
+ * },
+ *
+ * directives:Object.create(null),
+ * filters:Object.create(null),
+ * _base:Vue
+ * }
+ * @param {*} Vue
+ */
 export function initGlobalAPI (Vue: GlobalAPI) {
   // config
   const configDef = {}
   configDef.get = () => config
   if (process.env.NODE_ENV !== 'production') {
     configDef.set = () => {
+      // Do not replace the Vue.config object, set individual fields instead.
       warn(
-        'Do not replace the Vue.config object, set individual fields instead.'
+        '在Vue 的构造函数上添加config属性试图修改的在生产环境下会有提示'
       )
     }
   }
@@ -34,6 +48,8 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   // exposed util methods.
   // NOTE: these are not considered part of the public API - avoid relying on
   // them unless you are aware of the risk.
+  // 在Vue 上添加util属性
+  // 尽量不要使用它们
   Vue.util = {
     warn,
     extend,

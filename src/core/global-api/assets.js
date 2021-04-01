@@ -2,7 +2,12 @@
 
 import { ASSET_TYPES } from 'shared/constants'
 import { isPlainObject, validateComponentName } from '../util/index'
-
+/**
+ * Vue.component 全局组件
+ * Vue.directive 全局 指令
+ * Vue.filter
+ * @param {*} Vue
+ */
 export function initAssetRegisters (Vue: GlobalAPI) {
   /**
    * Create asset registration methods.

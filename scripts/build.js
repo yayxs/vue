@@ -1,3 +1,6 @@
+/**
+ * 对config.js中所有的rollup配置进行构建
+ */
 const fs = require('fs')
 const path = require('path')
 const zlib = require('zlib')

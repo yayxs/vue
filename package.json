@@ -2,8 +2,9 @@
   "name": "vue",
   "version": "2.6.12",
   "description": "Reactive, component-oriented view layer for modern web interfaces.",
-  "main": "dist/vue.runtime.common.js",
-  "module": "dist/vue.runtime.esm.js",
+
+  "main": "dist/vue.runtime.common.js", // cjs 浏览器 webpack1
+  "module": "dist/vue.runtime.esm.js", // webpack2+ rollup
   "unpkg": "dist/vue.js",
   "jsdelivr": "dist/vue.js",
   "typings": "types/index.d.ts",
@@ -14,7 +15,9 @@
   ],
   "sideEffects": false,
   "scripts": {
+    // 完整版 umd
     "dev": "rollup -w -c scripts/config.js --environment TARGET:web-full-dev",
+    // 运行时 cjs
     "dev:cjs": "rollup -w -c scripts/config.js --environment TARGET:web-runtime-cjs-dev",
     "dev:esm": "rollup -w -c scripts/config.js --environment TARGET:web-runtime-esm",
     "dev:test": "karma start test/unit/karma.dev.config.js",
