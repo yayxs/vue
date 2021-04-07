@@ -3,7 +3,7 @@
 import config from 'core/config'
 import { warn, makeMap, isNative } from '../util/index'
 
-let initProxy
+let initProxy // 声明变量
 
 if (process.env.NODE_ENV !== 'production') {
   const allowedGlobals = makeMap(

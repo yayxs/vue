@@ -204,7 +204,12 @@ export function createComponent (
 
   return vnode
 }
-
+/**
+ *
+ * @param {*} vnode
+ * @param {*} parent
+ * @returns
+ */
 export function createComponentInstanceForVnode (
   // we know it's MountedComponentVNode but flow doesn't
   vnode: any,

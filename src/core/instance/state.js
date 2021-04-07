@@ -46,13 +46,14 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 }
 
 export function initState (vm: Component) {
-  vm._watchers = []
+  vm._watchers = [] // 添加属性 初始值是数组 存储实例的watcher对象
   const opts = vm.$options
-  if (opts.props) initProps(vm, opts.props)
-  if (opts.methods) initMethods(vm, opts.methods)
-  if (opts.data) {
+  if (opts.props) initProps(vm, opts.props) // 选项中有props 就初始化props
+  if (opts.methods) initMethods(vm, opts.methods) // 如果有methods 就初始化方法
+  if (opts.data) { // data选项是否存在 存在的话就直接调用 initData 函数初始化
     initData(vm)
   } else {
+    // 观测一个空的对象
     observe(vm._data = {}, true /* asRootData */)
   }
   if (opts.computed) initComputed(vm, opts.computed)
@@ -111,7 +112,7 @@ function initProps (vm: Component, propsOptions: Object) {
 
 function initData (vm: Component) {
   let data = vm.$options.data
-  data = vm._data = typeof data === 'function'
+  data = vm._data = typeof data === 'function' // 如果是函数的话
     ? getData(data, vm)
     : data || {}
   if (!isPlainObject(data)) {

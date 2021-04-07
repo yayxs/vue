@@ -119,6 +119,7 @@ export function makeMap (
 
 /**
  * Check if a tag is a built-in tag.
+ * slot 和component 是 vue 自定义的作为标签存在 检查是不是内置的标签
  */
 export const isBuiltInTag = makeMap('slot,component', true)
 

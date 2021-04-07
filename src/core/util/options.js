@@ -25,6 +25,7 @@ import {
  * Option overwriting strategies are functions that handle
  * how to merge a parent option value and a child option
  * value into the final value.
+ * 选型合并的策略
  */
 const strats = config.optionMergeStrategies
 
@@ -32,13 +33,17 @@ const strats = config.optionMergeStrategies
  * Options with restrictions
  */
 if (process.env.NODE_ENV !== 'production') {
-  strats.el = strats.propsData = function (parent, child, vm, key) {
-    if (!vm) {
+  strats.el = strats.propsData = function (parent, child, vm, key) { // 添加两个策略属性
+    if (!vm) { // 没有传递vm实例直接警告
+      /**
+       * 在策略函数中通过判断是否存在vm就能够得知在实例化调用 还是在继承时调用 就能通过这个来判断是否是子组件
+       */
       warn(
         `option "${key}" can only be used during instance ` +
         'creation with the `new` keyword.'
       )
     }
+
     return defaultStrat(parent, child)
   }
 }
@@ -83,8 +88,9 @@ export function mergeDataOrFn (
 ): ?Function {
   if (!vm) {
     // in a Vue.extend merge, both should be functions
+    // s是否传递了子组件的data 检测是不是function
     if (!childVal) {
-      return parentVal
+      return parentVal // 直接返回parentVal
     }
     if (!parentVal) {
       return childVal
@@ -94,6 +100,7 @@ export function mergeDataOrFn (
     // merged result of both functions... no need to
     // check if parentVal is a function here because
     // it has to be a function to pass previous merges.
+    // 直接返回函数的结果
     return function mergedDataFn () {
       return mergeData(
         typeof childVal === 'function' ? childVal.call(this, this) : childVal,
@@ -101,6 +108,7 @@ export function mergeDataOrFn (
       )
     }
   } else {
+    // 拿到vm的情况下
     return function mergedInstanceDataFn () {
       // instance merge
       const instanceData = typeof childVal === 'function'
@@ -142,6 +150,7 @@ strats.data = function (
 
 /**
  * Hooks and props are merged as arrays.
+ *  首先判断组件选项中是否有对应声明周期的钩子函数
  */
 function mergeHook (
   parentVal: ?Array<Function>,
@@ -179,6 +188,19 @@ LIFECYCLE_HOOKS.forEach(hook => {
  * When a vm is present (instance creation), we need to do
  * a three-way merge between constructor options, instance
  * options and parent options.
+ */
+/**
+ *
+ * @param {*} parentVal Vue.options.components components: {
+	  KeepAlive,
+	  Transition,
+	  TransitionGroup
+	},
+  是包含3个内置组件的
+ * @param {*} childVal components选项
+ * @param {*} vm
+ * @param {*} key
+ * @returns
  */
 function mergeAssets (
   parentVal: ?Object,
@@ -269,20 +291,23 @@ const defaultStrat = function (parentVal: any, childVal: any): any {
 
 /**
  * Validate component names
+ * 校验组件的名字是否符合要求
  */
 function checkComponents (options: Object) {
   for (const key in options.components) {
-    validateComponentName(key)
+    validateComponentName(key) // 每个子组件的名字
   }
 }
 
 export function validateComponentName (name: string) {
+  // 组件的名字满足正则 /^[a-zA-Z][\w-]*$/
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeRegExp.source}]*$`).test(name)) {
     warn(
       'Invalid component name: "' + name + '". Component names ' +
       'should conform to valid custom element name in html5 specification.'
     )
   }
+
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
     warn(
       'Do not use built-in or reserved HTML elements as component ' +
@@ -294,17 +319,19 @@ export function validateComponentName (name: string) {
 /**
  * Ensure all props option syntax are normalized into the
  * Object-based format.
+ * 规范为对象形式--
  */
 function normalizeProps (options: Object, vm: ?Component) {
+  // 选项中没有options直接return 掉什么也不做
   const props = options.props
   if (!props) return
-  const res = {}
-  let i, val, name
-  if (Array.isArray(props)) {
+  const res = {} // 保存规范后的结果
+  let i, val, name //
+  if (Array.isArray(props)) { // 字符串数组的情况
     i = props.length
     while (i--) {
       val = props[i]
-      if (typeof val === 'string') {
+      if (typeof val === 'string') { // 必须是字符串
         name = camelize(val)
         res[name] = { type: null }
       } else if (process.env.NODE_ENV !== 'production') {
@@ -320,6 +347,7 @@ function normalizeProps (options: Object, vm: ?Component) {
         : { type: val }
     }
   } else if (process.env.NODE_ENV !== 'production') {
+    // 既不是数组也不是对象的情况下直接警告
     warn(
       `Invalid value for option "props": expected an Array or an Object, ` +
       `but got ${toRawType(props)}.`,
@@ -331,12 +359,18 @@ function normalizeProps (options: Object, vm: ?Component) {
 
 /**
  * Normalize all injections into Object-based format
+ * inject: {
+  'data1': { from: 'data1' },
+  'd2': { from: 'data2' },
+  'data3': { from: 'data3', someProperty: 'someValue' }
+}
  */
 function normalizeInject (options: Object, vm: ?Component) {
   const inject = options.inject
   if (!inject) return
   const normalized = options.inject = {}
-  if (Array.isArray(inject)) {
+  // 判断inject是否是数组和纯对象
+  if (Array.isArray(inject)) { // 如果是数组的情况
     for (let i = 0; i < inject.length; i++) {
       normalized[inject[i]] = { from: inject[i] }
     }
@@ -385,6 +419,7 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
  * 合并两个对象为一个新的对象 这个函数在实例化和继承的时候都有用到 函数会产生一个新的对象
+ * 在Vue.extend中也有用到
  */
 export function mergeOptions (
   parent: Object,
@@ -395,7 +430,7 @@ export function mergeOptions (
     checkComponents(child)
   }
 
-  if (typeof child === 'function') {
+  if (typeof child === 'function') { // child也可以是个函数
     child = child.options
   }
 
@@ -407,11 +442,13 @@ export function mergeOptions (
   // but only if it is a raw options object that isn't
   // the result of another mergeOptions call.
   // Only merged options has the _base property.
+  // 处理extend
   if (!child._base) {
     if (child.extends) {
       parent = mergeOptions(parent, child.extends, vm)
     }
-    if (child.mixins) {
+    // 处理mixin
+    if (child.mixins) { // 是一个数组所以要遍历一下
       for (let i = 0, l = child.mixins.length; i < l; i++) {
         parent = mergeOptions(parent, child.mixins[i], vm)
       }
@@ -423,13 +460,14 @@ export function mergeOptions (
   for (key in parent) {
     mergeField(key)
   }
+
   for (key in child) {
     if (!hasOwn(parent, key)) {
       mergeField(key)
     }
   }
   function mergeField (key) {
-    const strat = strats[key] || defaultStrat
+    const strat = strats[key] || defaultStrat // 定义了常量start
     options[key] = strat(parent[key], child[key], vm, key)
   }
   return options

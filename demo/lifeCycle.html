@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vue 生命周期进阶</title>
+  </head>
+  <body>
+    <!-- 结构 -->
+    <div id="app">
+      <keep-alive>
+        <child-com ></child-com>
+      </keep-alive>
+    </div>
+  </body>
+  <script src="..//dist/vue.js"></script>
+
+  <script>
+    var childCom = {
+      template: "<div> {{compName}}</div>",
+      // props: ["msg"],
+      data: function() {
+        return {
+          compName: "child"
+        };
+      },
+      beforeCreate: function() {
+        console.log(`child-beforeCreate`)
+      },
+      created: function() {
+        console.log(`child-created`)
+      },
+      beforeMount: function() {
+
+      },
+      mounted: function() {
+
+      },
+      deactivated: function() {
+
+      },
+      activated: function() {
+      },
+      beforeDestroy: function() {
+
+      },
+      destroyed: function() {
+
+      }
+    };
+    var app = new Vue({
+      el: "#app",
+      data: {
+        compName:'app'
+      },
+      components: {
+        childCom
+      },
+      methods: {},
+      beforeCreate() {
+console.log(`app-beforeCreate`)
+
+      },
+      created() {
+console.log(`app-created`)
+      },
+      beforeMount() {
+
+      },
+      mounted() {
+
+      },
+      beforeUpdate() {
+      },
+      updated() {
+      },
+      beforeDestroy() {
+
+      },
+      destroyed() {
+
+      }
+    });
+  </script>
+</html>

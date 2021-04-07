@@ -47,24 +47,29 @@ export function initMixin (Vue: Class<Component>) {
        *  vm 当前的Vue实例
        */
       vm.$options = mergeOptions(
-        resolveConstructorOptions(vm.constructor),
-        options || {},
-        vm
+        resolveConstructorOptions(vm.constructor), // 函数调用得到
+        options || {}, // 调用Vue传进来的
+        vm// 当前的Vue的实例
       )
     }
     /* istanbul ignore else */
+    // 主要作用是初始化渲染函数的作用域代理
     if (process.env.NODE_ENV !== 'production') {
-      initProxy(vm)
+      initProxy(vm) // 作用之一是在实例对象上添加
     } else {
       vm._renderProxy = vm
     }
     // expose real self
     vm._self = vm
+    // 初始化生命周期
     initLifecycle(vm)
+    // 初始化事件
     initEvents(vm)
+    // 生命周期钩子实现的方式
     initRender(vm)
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props
+    // inject选项的初始化
     initState(vm)
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
@@ -127,6 +132,7 @@ export function resolveConstructorOptions (Ctor: Class<Component>) {
     }
   }
   // 作用：用来获取当前实例构造者的`options` 最终返回的永远是`options`
+  // https://cn.vuejs.org/v2/api/#vm-options
   return options
 }
 
@@ -142,3 +148,20 @@ function resolveModifiedOptions (Ctor: Class<Component>): ?Object {
   }
   return modified
 }
+/**
+ * Vue.options = {
+ * components:{
+ * KeepAlive,
+ * Transition
+ * TransitionGroup
+ *
+ * },
+ * directive:{
+ * model,
+ *
+ * show
+ * },
+ * filters:Object.create(null)
+ *
+ * }
+ */

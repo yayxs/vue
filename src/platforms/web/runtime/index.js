@@ -22,6 +22,7 @@ import platformComponents from './components/index'
 // install platform specific utils
 // 安装特定的工具方法
 Vue.config.mustUseProp = mustUseProp
+// 检测是否是保留标签
 Vue.config.isReservedTag = isReservedTag
 Vue.config.isReservedAttr = isReservedAttr
 Vue.config.getTagNamespace = getTagNamespace
